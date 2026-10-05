@@ -1,10 +1,22 @@
 import { AtSign, EyeClosed, LockIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { MdFacebook } from "react-icons/md";
 import assets from "../assets/assets";
 
 const Login = () => {
+
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+
+  const handleLogin = () => {
+    if(!email) {
+      return
+    }
+  }
+
   return (
     <div className="w-full h-screen bg-slate-100 flex items-center justify-center">
       <div className="w-10/12 bg-slate-400/10 flex flex-col md:flex-row gap-4 md:gap-4 p-4 border border-slate-300 rounded-2xl">
