@@ -1,1 +1,14 @@
+/* Plus Jakarta Sans Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+/* Tailwindcss */
 @import "tailwindcss";
+
+* {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* Background: (bg-slate-100 বা #f8fafc) */
+/* Containers/Cards: (bg-white), (border border-slate-200) (rounded-2xl বা rounded-3xl) */
+/* Primary Accent Color: (bg-amber-400 বা #FACC15) */
+

@@ -1,9 +1,15 @@
 import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
     <div>
-      <h1 class="text-3xl font-bold underline">Hello world!</h1>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 };
