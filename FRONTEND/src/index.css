@@ -6,6 +6,11 @@
 
 * {
   font-family: "Plus Jakarta Sans", sans-serif;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  scroll-behavior: smooth ;
 }
 
 /* Background: (bg-slate-100 বা #f8fafc) */
