@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import ActiveCard from "../components/ActiveCard";
+import { FaArrowCircleLeft } from "react-icons/fa";
 
 const Chatbox = () => {
   const [messages, setMessages] = useState([
@@ -53,6 +54,92 @@ const Chatbox = () => {
     setText("");
   };
 
+  // SETTING PART
+
+  const defaultSettings = {
+    name: "Amar Naam",
+    about: "Banshbagan e achi",
+    sound: true,
+    desktop: false,
+    preview: true,
+    showOnline: true,
+    readReceipts: true,
+    lastSeen: true,
+    email: "you@example.com",
+  };
+
+  const menu = [
+    { id: "profile", label: "My Profile" },
+    { id: "notifications", label: "Notifications" },
+    { id: "privacy", label: "Privacy & Security" },
+    { id: "account", label: "Account Settings" },
+  ];
+
+  const Toggle = ({ label, desc, checked, onChange }) => (
+    <div className="flex items-center justify-between gap-3 py-3 border-b border-slate-300">
+      <div>
+        <p className="font-semibold text-slate-800">{label}</p>
+        {desc && <p className="text-xs text-slate-500">{desc}</p>}
+      </div>
+      <button
+        type="button"
+        onClick={onChange}
+        className={`relative w-11 h-6 rounded-full shrink-0 transition-all duration-200 ${
+          checked ? "bg-amber-400" : "bg-slate-300"
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200 ${
+            checked ? "translate-x-5" : ""
+          }`}
+        />
+      </button>
+    </div>
+  );
+
+  const inputClass =
+    "w-full py-2 px-4 rounded-2xl border-2 border-slate-300 bg-white text-slate-800 outline-none focus:border-amber-400 transition-all duration-200";
+
+  const btnClass =
+    "w-full border-2 border-amber-200 text-white font-bold py-2 px-4 bg-amber-400 hover:bg-slate-800 hover:border-slate-600 rounded-2xl cursor-pointer active:scale-95 transition-all duration-200";
+
+  const [settings, setSettings] = useState(defaultSettings);
+  const [activeSetting, setActiveSetting] = useState(null);
+  const [pwd, setPwd] = useState({ current: "", next: "" });
+
+  const update = (key, value) => setSettings((p) => ({ ...p, [key]: value }));
+  const toggle = (key) => setSettings((p) => ({ ...p, [key]: !p[key] }));
+
+  const handleReset = () => {
+    setSettings(defaultSettings);
+    setActiveSetting(null);
+    setPwd({ current: "", next: "" });
+    toast.success("Settings reset hoyeche");
+  };
+
+  const handleSaveProfile = () => {
+    if (!settings.name.trim()) return toast.error("Naam khali rakha jabe na");
+    // TODO: backend e PUT/PATCH request pathao
+    toast.success("Profile save hoyeche");
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    if (!pwd.current || pwd.next.length < 6)
+      return toast.error("Notun password kompokkhe 6 okkhor hote hobe");
+    // TODO: backend e axios diye pathao
+    toast.success("Password change hoyeche");
+    setPwd({ current: "", next: "" });
+  };
+
+  const handleLogout = () => {
+    // TODO: token muche login page e navigate koro
+    toast.success("Logout hoyeche");
+  };
+
+  const currentTitle =
+    menu.find((m) => m.id === activeSetting)?.label || "Settings";
+
   return (
     <div className="w-full h-screen bg-slate-100 px-10 flex gap-2">
       <div className="w-3/12 h-full flex flex-col ">
@@ -101,7 +188,7 @@ const Chatbox = () => {
                     : "bg-white text-slate-800 border border-slate-300 rounded-bl-sm"
                 }`}
               >
-                <p className="break-words">{msg.text}</p>
+                <p className="wrap-break-words">{msg.text}</p>
                 <span className="block text-[11px] text-slate-500 text-right mt-1">
                   {msg.time}
                 </span>
@@ -129,26 +216,172 @@ const Chatbox = () => {
         </form>
       </div>
 
+
       <div className="w-3/12 h-full flex flex-col ">
-        <div className="flex justify-between py-4 border-b-2 border-slate-400">
-          <h2 className="text-xl font-semibold text-slate-800">Settings</h2>
-          <div className="py-1 px-2 border border-slate-800/10 bg-amber-400/50 text-slate-800 font-bold rounded-2xl cursor-pointer active:scale-95 transition-all duration-200">
+        <div className="flex justify-between items-center py-4 border-b-2 border-slate-400">
+          <h2 className="text-xl font-semibold text-slate-800">
+            {currentTitle}
+          </h2>
+          <div
+            onClick={handleReset}
+            className="py-1 px-2 border border-slate-800/10 bg-amber-400/50 text-slate-800 font-bold rounded-2xl cursor-pointer active:scale-95 transition-all duration-200"
+          >
             Reset All
           </div>
         </div>
-        <div className="w-full min-h-0 flex-1 my-4 space-y-2 overflow-y-scroll">
-          <div className="w-full border-2 border-amber-200 text-white font-bold py-2 px-4 bg-amber-400 hover:bg-slate-800 hover:border-slate-600 rounded-2xl cursor-pointer active:scale-95 transition-all duration-200">
-            My Profile
-          </div>
-          <div className="w-full border-2 border-amber-200 text-white font-bold py-2 px-4 bg-amber-400 hover:bg-slate-800 hover:border-slate-600 rounded-2xl cursor-pointer active:scale-95 transition-all duration-200">
-            Notifications
-          </div>
-          <div className="w-full border-2 border-amber-200 text-white font-bold py-2 px-4 bg-amber-400 hover:bg-slate-800 hover:border-slate-600 rounded-2xl cursor-pointer active:scale-95 transition-all duration-200">
-            Privacy & Security
-          </div>
-          <div className="w-full border-2 border-amber-200 text-white font-bold py-2 px-4 bg-amber-400 hover:bg-slate-800 hover:border-slate-600 rounded-2xl cursor-pointer active:scale-95 transition-all duration-200">
-            Account Settings
-          </div>
+
+        <div className="w-full min-h-0 flex-1 my-4 space-y-2 overflow-y-auto pr-1">
+          {/* Menu */}
+          {!activeSetting &&
+            menu.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => setActiveSetting(item.id)}
+                className={btnClass}
+              >
+                {item.label}
+              </div>
+            ))}
+
+          {/* Back button */}
+          {activeSetting && (
+            <button
+              onClick={() => setActiveSetting(null)}
+              className="text-sm font-semibold text-slate-700 hover:text-slate-900 mb-2 bg-amber-400 py-2 px-4 rounded-2xl flex items-center gap-1"
+            >
+              <FaArrowCircleLeft />
+              Back
+            </button>
+          )}
+
+          {/* Profile */}
+          {activeSetting === "profile" && (
+            <div className="space-y-3">
+              <div className="flex justify-center">
+                <div className="w-20 h-20 rounded-full bg-amber-400 border-2 border-slate-800 flex items-center justify-center text-3xl font-bold text-slate-800">
+                  {settings.name.charAt(0).toUpperCase() || "?"}
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-slate-700">
+                  Naam
+                </label>
+                <input
+                  type="text"
+                  value={settings.name}
+                  onChange={(e) => update("name", e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-slate-700">
+                  About
+                </label>
+                <textarea
+                  rows={3}
+                  value={settings.about}
+                  onChange={(e) => update("about", e.target.value)}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <button onClick={handleSaveProfile} className={btnClass}>
+                Save
+              </button>
+            </div>
+          )}
+
+          {/* Notifications */}
+          {activeSetting === "notifications" && (
+            <div>
+              <Toggle
+                label="Message sound"
+                desc="Notun message ashle shobdo hobe"
+                checked={settings.sound}
+                onChange={() => toggle("sound")}
+              />
+              <Toggle
+                label="Desktop notification"
+                desc="Browser e notification dekhabe"
+                checked={settings.desktop}
+                onChange={() => toggle("desktop")}
+              />
+              <Toggle
+                label="Message preview"
+                desc="Notification e message er likha dekhabe"
+                checked={settings.preview}
+                onChange={() => toggle("preview")}
+              />
+            </div>
+          )}
+
+          {/* Privacy */}
+          {activeSetting === "privacy" && (
+            <div>
+              <Toggle
+                label="Online status"
+                desc="Onnora tomake online dekhte parbe"
+                checked={settings.showOnline}
+                onChange={() => toggle("showOnline")}
+              />
+              <Toggle
+                label="Read receipts"
+                desc="Message pora hole onno jon jante parbe"
+                checked={settings.readReceipts}
+                onChange={() => toggle("readReceipts")}
+              />
+              <Toggle
+                label="Last seen"
+                desc="Shesh kokhon active chile dekha jabe"
+                checked={settings.lastSeen}
+                onChange={() => toggle("lastSeen")}
+              />
+            </div>
+          )}
+
+          {/* Account */}
+          {activeSetting === "account" && (
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-semibold text-slate-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={settings.email}
+                  readOnly
+                  className={`${inputClass} bg-slate-200 cursor-not-allowed`}
+                />
+              </div>
+
+              <form onSubmit={handleChangePassword} className="space-y-2">
+                <p className="font-semibold text-slate-800">Password change</p>
+                <input
+                  type="password"
+                  placeholder="Ager password"
+                  value={pwd.current}
+                  onChange={(e) => setPwd({ ...pwd, current: e.target.value })}
+                  className={inputClass}
+                />
+                <input
+                  type="password"
+                  placeholder="Notun password"
+                  value={pwd.next}
+                  onChange={(e) => setPwd({ ...pwd, next: e.target.value })}
+                  className={inputClass}
+                />
+                <button type="submit" className={btnClass}>
+                  Update Password
+                </button>
+              </form>
+
+              <button
+                onClick={handleLogout}
+                className="w-full border-2 border-red-300 text-white font-bold py-2 px-4 bg-red-500 hover:bg-red-700 rounded-2xl active:scale-95 transition-all duration-200"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
