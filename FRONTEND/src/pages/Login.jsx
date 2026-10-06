@@ -3,19 +3,40 @@ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { MdFacebook } from "react-icons/md";
 import assets from "../assets/assets";
+import toast from "react-hot-toast";
+import { Link } from "react-router";
 
 const Login = () => {
-
-  const [email, setEmail] = useState('');
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
-    if(!email) {
-      return
+    if (!email) {
+      toast.error("Please enter your email address!");
+      setEmailError(true);
+      return;
     }
-  }
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address!");
+      setEmailError(true);
+      return;
+    }
+    if (!password) {
+      toast.error("Please enter your password!");
+      setPasswordError(true);
+      return;
+    }
+
+    try {
+      toast.success("Login successfully!");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <div className="w-full h-screen bg-slate-100 flex items-center justify-center">
@@ -40,28 +61,51 @@ const Login = () => {
         <div className="w-full md:w-1/2">
           <div className="w-full h-full bg-white py-12 px-8 space-y-6 rounded-xl border-2 border-slate-200">
             <div className="space-y-2">
-              <div className="w-full border-2 border-slate-400 rounded-lg relative">
+              <div
+                className={`w-full border-2 rounded-lg relative ${emailError ? "text-red-500 border-red-500" : "border-slate-400"}`}
+              >
                 <AtSign
                   size={20}
-                  className="absolute left-4 top-1/2 -translate-1/2 text-slate-500"
+                  className={`absolute left-4 top-1/2 -translate-1/2 ${emailError ? "text-red-500" : "text-slate-500"}`}
                 />
                 <input
-                  className="w-full px-10 py-2 outline-0 text-slate-900 font-semibold"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailError(false);
+                  }}
+                  value={email}
+                  className={`w-full px-10 py-2 outline-0 font-semibold ${emailError ? "text-red-500" : "text-slate-900"}`}
                   type="email"
                   placeholder="Email Address"
                 />
               </div>
-              <div className="w-full border-2 border-slate-400 rounded-lg relative">
+              <div
+                className={`w-full border-2 rounded-lg relative ${passwordError ? "text-red-500 border-red-500" : "border-slate-400"}`}
+              >
                 <LockIcon
                   size={20}
-                  className="absolute top-1/2 -translate-y-1/2 left-2 text-slate-500"
+                  className={`absolute left-4 top-1/2 -translate-1/2 ${passwordError ? "text-red-500" : "text-slate-500"}`}
                 />
                 <input
-                  className="w-full px-10 py-2 outline-0 text-slate-900 font-semibold"
-                  type="password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setPasswordError(false);
+                  }}
+                  value={password}
+                  className={`w-full px-10 py-2 outline-0 font-semibold ${passwordError ? "text-red-500" : "text-slate-900"}`}
                   placeholder="Password"
                 />
-                <EyeClosed className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500" />
+                {showPassword ? (
+                  <EyeIcon
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                  />
+                ) : (
+                  <EyeClosed
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                  />
+                )}
               </div>
               <div className="text-end">
                 <p className="text-xs text-slate-600 -mt-1 font-semibold cursor-pointer hover:underline">
@@ -71,14 +115,19 @@ const Login = () => {
             </div>
 
             <div className="space-y-2">
-              <button className="w-full py-3 bg-amber-400 text-white tracking-wider rounded-2xl font-bold cursor-pointer active:scale-95 transition-all duration-300">
+              <button
+                onClick={handleLogin}
+                className="w-full py-3 bg-amber-400 text-white tracking-wider rounded-2xl font-bold cursor-pointer active:scale-95 transition-all duration-300"
+              >
                 Login
               </button>
               <p className="text-sm font-medium text-slate-600">
                 Don't have an account?{" "}
-                <span className="font-semibold cursor-pointer hover:underline">
-                  Sign Up
-                </span>
+                <Link to={"/register"}>
+                  <span className="font-semibold cursor-pointer hover:underline">
+                    Sign Up
+                  </span>
+                </Link>
               </p>
             </div>
 
