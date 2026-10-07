@@ -1,12 +1,14 @@
-import { AtSign, EyeClosed, LockIcon } from "lucide-react";
+import { AtSign, EyeClosed, EyeIcon, LockIcon } from "lucide-react";
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { MdFacebook } from "react-icons/md";
 import assets from "../assets/assets";
 import toast from "react-hot-toast";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import axios from "axios";
 
 const Login = () => {
+  const navigate = useNavigate();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -14,7 +16,7 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email) {
       toast.error("Please enter your email address!");
       setEmailError(true);
@@ -32,7 +34,18 @@ const Login = () => {
     }
 
     try {
+
+      const res = await axios.post('http://localhost:4000/api/v1/users/login', {
+        email,
+        password
+      })
+
       toast.success("Login successfully!");
+
+      setTimeout(() => {
+        navigate("/chat");
+      }, 2000);
+
     } catch (error) {
       toast.error(error.message);
     }
@@ -93,17 +106,18 @@ const Login = () => {
                   }}
                   value={password}
                   className={`w-full px-10 py-2 outline-0 font-semibold ${passwordError ? "text-red-500" : "text-slate-900"}`}
+                  type={showPassword ? "text" : "password"}
                   placeholder="Password"
                 />
                 {showPassword ? (
                   <EyeIcon
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer active:scale-95 transition-all duration-200"
                   />
                 ) : (
                   <EyeClosed
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer active:scale-95 transition-all duration-200"
                   />
                 )}
               </div>

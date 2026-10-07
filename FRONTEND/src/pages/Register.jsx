@@ -4,9 +4,11 @@ import { AtSign, EyeClosed, EyeIcon, Key, LockIcon, User } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { MdFacebook } from "react-icons/md";
 import toast from "react-hot-toast";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import axios from "axios";
 
 const Register = () => {
+  const navigate = useNavigate();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [userName, setUserName] = useState("");
   const [userNameError, setUserNameError] = useState(false);
@@ -19,7 +21,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!userName) {
       toast.error("Please enter your full name!");
       setUserNameError(true);
@@ -43,10 +45,24 @@ const Register = () => {
     if (password !== confirmPassword) {
       toast.error("Please type same confirm password!");
       setConfirmPasswordError(true);
+      return;
     }
 
     try {
+      const res = await axios.post(
+        "http://localhost:4000/api/v1/users/register",
+        {
+          username: userName,
+          email,
+          password,
+        },
+      );
+
       toast.success("Registration successfully completed!");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       toast.error(error.message);
     }
@@ -131,12 +147,12 @@ const Register = () => {
                 {showPassword ? (
                   <EyeIcon
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer active:scale-95 transition-all duration-200"
                   />
                 ) : (
                   <EyeClosed
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer active:scale-95 transition-all duration-200"
                   />
                 )}
               </div>
@@ -160,12 +176,12 @@ const Register = () => {
                 {showConfirmPassword ? (
                   <EyeIcon
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer active:scale-95 transition-all duration-200"
                   />
                 ) : (
                   <EyeClosed
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer active:scale-95 transition-all duration-200"
                   />
                 )}
               </div>
